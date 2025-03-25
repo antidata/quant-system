@@ -24,37 +24,21 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential wget curl pkg-config automake libtool
+        sudo apt-get install -y build-essential wget curl pkg-config
 
-    - name: Install TA-Lib
+    - name: Install TA-Lib from PPA
       run: |
-        # Download and extract source
-        curl -L -o ta-lib-0.4.0-src.tar.gz http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-        tar -xzf ta-lib-0.4.0-src.tar.gz
-        cd ta-lib/
-        # Build and install
-        ./configure --prefix=/usr
-        make
-        sudo make install
-        # Create symlink with correct name
-        sudo ln -s /usr/lib/libta_lib.so.0 /usr/lib/libta-lib.so
-        # Update the shared library cache
-        sudo ldconfig
-        # Verify the library is installed and linked
-        ls -l /usr/lib/libta*
-        ldconfig -p | grep ta
-        # Clean up
-        cd ..
-        rm -rf ta-lib-0.4.0-src.tar.gz ta-lib/
+        sudo add-apt-repository ppa:mario-mariomedina/talib
+        sudo apt-get update
+        sudo apt-get install -y libta-lib0 ta-lib0-dev
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip wheel setuptools
         # Install numpy first to ensure correct version
         pip install 'numpy<1.25.0'
-        # Install TA-Lib with verbose output and explicit lib path
-        export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
-        CFLAGS="-I/usr/include/ta-lib" LDFLAGS="-L/usr/lib" pip install --no-cache-dir --verbose ta-lib
+        # Install TA-Lib from pre-built wheel
+        pip install --no-cache-dir https://files.pythonhosted.org/packages/e6/c4/8c00e3c0b9d8c5b5e2b2d3d8e1c7e3f3f08e9c0d2e8a4b9f0d3e9a1c7e7/TA_Lib-0.4.24-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
         # Now install other requirements
         pip install -r requirements.txt
         pip install pytest pytest-cov flake8 black isort
