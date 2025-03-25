@@ -35,6 +35,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        # Install numpy first to ensure correct version
+        pip install 'numpy<1.25.0'
+        # Install TA-Lib with specific version
+        pip install TA-Lib==0.4.24
+        # Now install other requirements
         pip install -r requirements.txt
         pip install pytest pytest-cov flake8 black isort
     
