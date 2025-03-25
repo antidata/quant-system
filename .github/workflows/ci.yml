@@ -24,7 +24,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential wget curl pkg-config
+        sudo apt-get install -y build-essential wget curl pkg-config automake libtool
 
     - name: Install TA-Lib
       run: |
@@ -32,12 +32,21 @@ jobs:
         curl -L -o ta-lib-0.4.0-src.tar.gz http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
         tar -xzf ta-lib-0.4.0-src.tar.gz
         cd ta-lib/
-        # Build and install
+        # Rebuild autotools files
+        autoreconf -fi
+        # Build and install with debugging output
         ./configure --prefix=/usr
-        make -j$(nproc)
+        # Create .deps directory if it doesn't exist
+        mkdir -p src/ta_common/.deps
+        mkdir -p src/ta_func/.deps
+        mkdir -p src/tools/gen_code/.deps
+        # Build with verbose output
+        make CFLAGS="-Wall -g -O2" V=1
         sudo make install
         # Update the shared library cache
         sudo ldconfig
+        # Verify the library is installed
+        ls -l /usr/lib/libta_lib*
         # Clean up
         cd ..
         rm -rf ta-lib-0.4.0-src.tar.gz ta-lib/
@@ -50,7 +59,7 @@ jobs:
         # Install numpy first to ensure correct version
         pip install 'numpy<1.25.0'
         # Install TA-Lib with verbose output
-        pip install --verbose ta-lib
+        CFLAGS="-I/usr/include/ta-lib" LDFLAGS="-L/usr/lib" pip install --no-cache-dir --verbose ta-lib
         # Now install other requirements
         pip install -r requirements.txt
         pip install pytest pytest-cov flake8 black isort
