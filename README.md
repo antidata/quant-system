@@ -108,7 +108,11 @@ tests/                # Test suite
 
 1. Clone the repository:
 ```bash
+<<<<<<< HEAD
 git clone https://github.com/yourusername/quant-system.git
+=======
+git clone https://github.com/antidata/quant-system.git
+>>>>>>> 606954d (Initial commit)
 cd quant-system
 ```
 
@@ -327,9 +331,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, please:
 1. Check the [documentation](docs/)
+<<<<<<< HEAD
 2. Search existing [issues](https://github.com/yourusername/quant-system/issues)
+=======
+2. Search existing [issues](https://github.com/antidata/quant-system/issues)
+>>>>>>> 606954d (Initial commit)
 3. Create a new issue if needed
 
 ---
 
+<<<<<<< HEAD
 Made with ❤️ by the Quantitative Trading System Team 
+=======
+Made with ❤️ by Mars
+>>>>>>> 606954d (Initial commit)
